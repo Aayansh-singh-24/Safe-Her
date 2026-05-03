@@ -2,16 +2,16 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 
-class User(Base):
-    __name__ = "user"
 
-    id = Column(Integer,primary_key=True,index=True)
-    name = Column(String,nullable=False)
-    phoneNo = Column(String,unique=True,index=True,nullable=False)
+class User(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    phoneNo = Column(String, unique=True, index=True, nullable=False)
 
     trusted_contacts = relationship(
-        "TrustedContact",
+        "TrustedContacts",
         back_populates="owner",
         cascade="all, delete"
-    ) 
-
+    )
