@@ -1,1 +1,9 @@
+# Ignore Python virtual environment folders
 .venv/
+
+
+# Ignore Python bytecode cache directories
+__pycache__/
+**/__pycache__/
+
+safeher.db
