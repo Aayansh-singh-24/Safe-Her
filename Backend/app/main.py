@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.database import Base, engine
+from app.utils.database import Base, engine
 from app.models.user import User
 # from app.models.trsuted_contact import alert
 from app.routes import trusted_contacts,alert
@@ -11,7 +11,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="SafeHer Backend")
 
 app.include_router(trusted_contacts.router)
-app.include_router(alert.router)
+# app.include_router(alert.router)
 
 
 app.add_middleware(

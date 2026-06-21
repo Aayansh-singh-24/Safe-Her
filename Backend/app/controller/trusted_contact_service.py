@@ -2,7 +2,8 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.models.trsuted_contact import TrustedContacts
-from app.schemas.trusted_contact import TrustedContactCreate, TrustedContactUpdate
+from app.schemas.trusted_contact import TrustedContactCreateSchema, TrustedContactUpdate
+
 
 
 def validate_phone_number(phone_number: str):
@@ -19,7 +20,7 @@ def validate_phone_number(phone_number: str):
         )
 
 
-def add_contact(db: Session, user_id: int, data: TrustedContactCreate):
+def add_contact(db: Session, user_id: int, data: TrustedContactCreateSchema):
     validate_phone_number(data.phone_number)
 
     existing_contact = db.query(TrustedContacts).filter(
@@ -36,7 +37,6 @@ def add_contact(db: Session, user_id: int, data: TrustedContactCreate):
     contact = TrustedContacts(
         userId=user_id,
         name=data.name,
-        country_code=data.country_code,
         phoneNo=data.phone_number,
         isSOS=data.is_sos_contact
     )
@@ -54,11 +54,11 @@ def get_contacts(db: Session, user_id: int):
     ).all()
 
 
-def get_sos_contacts(db: Session, user_id: int):
-    return db.query(TrustedContacts).filter(
-        TrustedContacts.userId == user_id,
-        TrustedContacts.isSOS.is_(True)
-    ).all()
+# def get_sos_contacts(db: Session, user_id: int):
+#     return db.query(TrustedContacts).filter(
+#         TrustedContacts.userId == user_id,
+#         TrustedContacts.isSOS.is_(True)
+#     ).all()
 
 
 def update_contact(db: Session, user_id: int, contact_id: int, data: TrustedContactUpdate):
@@ -120,6 +120,4 @@ def delete_contact(db: Session, user_id: int, contact_id: int):
     db.delete(contact)
     db.commit()
 
-    return {
-        "message": "Contact deleted successfully"
-    }
+    return None

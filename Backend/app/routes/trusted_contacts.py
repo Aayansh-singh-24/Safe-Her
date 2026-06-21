@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.utils.database import get_db
 from app.schemas.trusted_contact import (
-    TrustedContactCreate,
+    TrustedContactCreateSchema,
     TrustedContactUpdate,
     TrustedContactResponse
 )
-from app.services import trusted_contact_service
+from app.controller import trusted_contact_service
 
 
 router = APIRouter(
@@ -22,16 +22,16 @@ def get_current_user_id():
     return 1
 
 
-@router.post("/", response_model=TrustedContactResponse)
+@router.post("/create_contact", response_model=TrustedContactResponse, status_code=status.HTTP_201_CREATED)
 def create_contact(
-    data: TrustedContactCreate,
+    data: TrustedContactCreateSchema,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
     return trusted_contact_service.add_contact(db, user_id, data)
 
 
-@router.get("/", response_model=list[TrustedContactResponse])
+@router.get("/read_contacts", response_model=list[TrustedContactResponse],status_code=status.HTTP_200_OK)
 def read_contacts(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
@@ -39,15 +39,15 @@ def read_contacts(
     return trusted_contact_service.get_contacts(db, user_id)
 
 
-@router.get("/sos", response_model=list[TrustedContactResponse])
-def read_sos_contacts(
-    db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user_id)
-):
-    return trusted_contact_service.get_sos_contacts(db, user_id)
+# @router.get("/sos", response_model=list[TrustedContactResponse])
+# def read_sos_contacts(
+#     db: Session = Depends(get_db),
+#     user_id: int = Depends(get_current_user_id)
+# ):
+#     return trusted_contact_service.get_sos_contacts(db, user_id)
 
 
-@router.put("/{contact_id}", response_model=TrustedContactResponse)
+@router.put("/edit_contact/{contact_id}", response_model=TrustedContactResponse, status_code=status.HTTP_200_OK)
 def edit_contact(
     contact_id: int,
     data: TrustedContactUpdate,
@@ -57,7 +57,7 @@ def edit_contact(
     return trusted_contact_service.update_contact(db, user_id, contact_id, data)
 
 
-@router.delete("/{contact_id}")
+@router.delete("/remove_contact/{contact_id}",status_code=status.HTTP_204_NO_CONTENT)
 def remove_contact(
     contact_id: int,
     db: Session = Depends(get_db),

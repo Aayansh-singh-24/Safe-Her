@@ -1,9 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class TrustedContactCreate(BaseModel):
+class TrustedContactCreateSchema(BaseModel):
     name: str = Field(..., min_length=2, max_length=50)
-    country_code: str = "+91"
     phone_number: str = Field(..., min_length=10, max_length=10)
     is_sos_contact: bool = False
 
