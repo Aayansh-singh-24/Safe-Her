@@ -13,3 +13,5 @@ pydantic-settings==2.11.0
 PyJWT==2.13.0
 pwdlib==0.2.0
 
+aiofiles
+

@@ -18,5 +18,11 @@ class UserModel(Base):
         cascade="all, delete"
     )
 
+    audio = relationship(
+        "AudioModel",
+        back_populates="owner",
+        cascade="all,delete"
+    )
+
 
     

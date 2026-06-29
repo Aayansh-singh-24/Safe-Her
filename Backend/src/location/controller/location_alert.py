@@ -1,4 +1,4 @@
-from fastapi import HTTPException,status
+from fastapi import HTTPException,status,BackgroundTasks
 from sqlalchemy.orm import Session
 from src.location.schema.dtos import locationAlertSchema
 from src.trusted_contact.models.model import TrustedContactsModel
@@ -16,12 +16,13 @@ PHONE = os.getenv("TWILIO_PHONE_NUMBER")
 from twilio.rest import Client
 
 
+client = Client(ACCOUNT_SID, AUTH_TOKEN)
+
 
 # print(message.sid)
 # def send_sms(phoneNo:TrustedContactsModel, message:str):
 def send_sms(phone_no:str,message_body:str):
     try:
-     client = Client(ACCOUNT_SID, AUTH_TOKEN)
      message = client.messages.create(
      body=message_body,
      from_=PHONE,
@@ -32,9 +33,10 @@ def send_sms(phone_no:str,message_body:str):
         print(f"Failed to send SMS to {phone_no}: {str(e)}")
 
 
-def alert(location:locationAlertSchema, db:Session, user:UserModel):
+def alert(location:locationAlertSchema, background_task:BackgroundTasks, db:Session, current_user:UserModel):
+
     Contacts = db.query(TrustedContactsModel).filter(
-        user.id == TrustedContactsModel.userId
+        current_user.id == TrustedContactsModel.userId
     ).all()
 
     if not Contacts:
@@ -57,7 +59,9 @@ def alert(location:locationAlertSchema, db:Session, user:UserModel):
             country_code_str = "+" + country_code_str
         phone_no = f"{country_code}{contact.phoneNo}"
         
-        send_sms(phone_no, message_body)
+        background_task.add_task(send_sms,phone_no, message_body)
+
+        # send_sms(phone_no, message_body)
 
         # send_sms(contact,message)
 
