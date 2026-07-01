@@ -61,8 +61,5 @@ def alert(location:locationAlertSchema, background_task:BackgroundTasks, db:Sess
         
         background_task.add_task(send_sms,phone_no, message_body)
 
-        # send_sms(phone_no, message_body)
-
-        # send_sms(contact,message)
 
     return {"link" : location_link}
