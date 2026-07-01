@@ -17,6 +17,8 @@ class UserModel(Base):
         back_populates="owner",
         cascade="all, delete"
     )
+    
+
 
 
     
