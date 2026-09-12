@@ -13,10 +13,7 @@ from src.profile import profile_routes
 from src.utils.settings import setting
 
 
-from src.Emergency.model import EmergencySession, LocationHistory
-from src.Emergency import websocket, tracking_router
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from src.emergency import websocket, tracking_router
 
 
 Base.metadata.create_all(bind=engine)
