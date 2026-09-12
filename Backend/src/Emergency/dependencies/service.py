@@ -1,7 +1,7 @@
 from __future__ import annotations
 from fastapi import HTTPException,status
 import logging
-from datetime import datetime, UTC
+from datetime import datetime, timezone, UTC
 from sqlalchemy.orm import Session
 from src.utils.settings import setting
 from twilio.rest import Client
@@ -79,7 +79,7 @@ class EmergencyService:
         logger.info( "Closing previous emergency session %s for user %s", active_session.session_id, current_user.id)
 
         active_session.status = "ENDED"
-        active_session.ended_time = datetime.now(UTC)
+        active_session.ended_time = datetime.now(timezone.utc)
 
         self.db.commit()
 
@@ -149,7 +149,7 @@ class EmergencyService:
             longitude = body.longitude,
             speed = body.speed,
             accuracy = body.accuracy,
-            timestamp = datetime.now(UTC)
+            timestamp = datetime.now(timezone.utc)
         )
 
         try:
